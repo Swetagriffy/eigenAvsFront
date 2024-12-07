@@ -1,3 +1,4 @@
+import React from 'react';
 import Select from 'react-select';
 
 const currencyOptions = [
@@ -15,7 +16,7 @@ const currencyOptions = [
     ),
   },
   {
-    value: 'DAI',
+    value: 'ETH',
     label: (
       <div className="flex items-center">
         <img
@@ -33,6 +34,7 @@ interface DropdownWithImagesProps {
   selectedAsset: 'ETH' | 'USDT';
   onAssetChange: (asset: 'ETH' | 'USDT') => void;
 }
+
 const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
   selectedAsset,
   onAssetChange,
@@ -46,9 +48,7 @@ const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
       border: 'none',
       minHeight: '32px',
       boxShadow: 'none',
-      flex: '1 1 auto',
       display: 'flex',
-      '&:hover': {},
     }),
     option: (provided: any, state: any) => ({
       ...provided,
@@ -57,10 +57,8 @@ const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
       alignItems: 'center',
       fontSize: '12px',
       fontWeight: 'bold',
-      border: 'none',
       backgroundColor: state.isFocused ? '#EFF4FF' : 'white',
       color: state.isFocused ? '#1f2937' : '#4b5563',
-      transition: 'all 0.2s ease-in-out',
     }),
     singleValue: (provided: any) => ({
       ...provided,
@@ -71,22 +69,15 @@ const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
     }),
     menu: (provided: any) => ({
       ...provided,
-      flex: '1 1 auto',
       marginTop: '4px',
-
       border: 'none',
       boxShadow: 'none',
-      animation: 'fadeIn 0.2s ease-in-out',
     }),
     menuList: (provided: any) => ({
       ...provided,
       padding: '0',
     }),
   };
-
-  const selectedOption = currencyOptions.find(
-    (option) => option.value === selectedAsset
-  );
 
   const handleChange = (selectedOption: any) => {
     if (selectedOption) {
@@ -98,11 +89,11 @@ const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
     <div className="flex items-center">
       <Select
         options={currencyOptions}
-        defaultValue={currencyOptions[0]}
+        value={currencyOptions.find((option) => option.value === selectedAsset)} // Bind to selectedAsset
+        onChange={handleChange}
         styles={customStyles}
         components={{ IndicatorSeparator: () => null }}
       />
-
       <style>
         {`
           @keyframes fadeIn {

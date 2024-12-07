@@ -7,7 +7,7 @@ interface SwapCardProps {
 
 const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
   const [sellAmount, setSellAmount] = useState<string>('');
-  const [buyAmount, setBuyAmount] = useState<string>('');
+  const [buyAmount, setBuyAmount] = useState<string>('0');
   const [sellAsset, setSellAsset] = useState<'ETH' | 'USDT'>('USDT');
   const [buyAsset, setBuyAsset] = useState<'ETH' | 'USDT'>('ETH');
   const [price, setPrice] = useState<number | null>(null);
@@ -48,7 +48,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
     const value = event.target.value;
     if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
       setSellAmount(value);
-      console.log(`hi at amount ${sellAmount}`);
 
       if (price !== null && value !== '') {
         const sellValue = parseFloat(value);
@@ -60,32 +59,24 @@ const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
               : 0;
 
         setBuyAmount(buyValue.toFixed(6));
-        console.log(`hi at buyamount ${buyAmount}`);
       } else {
-        setBuyAmount('');
+        setBuyAmount('0');
       }
     }
   };
 
   const handleSellAssetChange = (newSellAsset: 'ETH' | 'USDT') => {
-    console.log(`hi at handleseell ${newSellAsset}`);
-    console.log(`hi at handleseell2 ${buyAsset}`);
     if (newSellAsset === buyAsset) {
       setBuyAsset(sellAsset);
     }
     setSellAsset(newSellAsset);
-    console.log(`hi at handleseell ${newSellAsset}`);
-    console.log(`hi at handleseell2 ${buyAsset}`);
   };
 
   const handleBuyAssetChange = (newBuyAsset: 'ETH' | 'USDT') => {
-    console.log(`hi at handlenewbuy ${newBuyAsset}`);
-
     if (newBuyAsset === sellAsset) {
       setSellAsset(buyAsset);
     }
     setBuyAsset(newBuyAsset);
-    console.log(`hi at handlenewbuyasset ${newBuyAsset}`);
   };
 
   return (
@@ -112,16 +103,6 @@ const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
               value={sellAmount}
               onChange={handleSellInputChange}
             />
-            <span className="ml-3 text-sm text-gray-500">
-              {price !== null && sellAmount
-                ? `$${(sellAsset === 'USDT'
-                    ? parseFloat(sellAmount) * price
-                    : parseFloat(sellAmount) * (1 / price)
-                  ).toFixed(2)}`
-                : price !== null
-                  ? '$0.00'
-                  : 'Fetching price...'}
-            </span>
           </div>
           <DropdownWithImages
             selectedAsset={sellAsset}
