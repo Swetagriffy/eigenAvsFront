@@ -6,18 +6,33 @@ interface SwapCardProps {
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
-  const [amount, setAmount] = useState<string>('');
+  const [sellAmount, setSellAmount] = useState<string>('');
+  const [buyAmount, setBuyAmount] = useState<string>('');
+  const [sellAsset, setSellAsset] = useState<'ETH' | 'USDT'>('USDT');
+  const [buyAsset, setBuyAsset] = useState<'ETH' | 'USDT'>('ETH');
   const [price, setPrice] = useState<number | null>(null);
-  const [asset, setAsset] = useState<'ETH' | 'USDT'>('ETH');
 
   const fetchPrice = async () => {
     try {
-      const symbol = asset === 'ETH' ? 'ETHUSDT' : 'USDTUSDT';
+      const symbol =
+        sellAsset === 'USDT' && buyAsset === 'ETH'
+          ? 'ETHUSDT'
+          : sellAsset === 'ETH' && buyAsset === 'USDT'
+            ? 'ETHUSDT'
+            : null;
+      console.log(`hi at symbol ${symbol}`);
+
+      if (!symbol) {
+        setPrice(null);
+        return;
+      }
+
       const response = await fetch(
         `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`
       );
       const data = await response.json();
       setPrice(parseFloat(data.price));
+      console.log(`hi at price ${price}`);
     } catch (error) {
       console.error('Error fetching price:', error);
     }
@@ -25,17 +40,52 @@ const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
 
   useEffect(() => {
     fetchPrice();
-  }, [asset]);
+  }, [sellAsset, buyAsset]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSellInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     if (value === '' || /^[0-9]*\.?[0-9]*$/.test(value)) {
-      setAmount(value);
+      setSellAmount(value);
+      console.log(`hi at amount ${sellAmount}`);
+
+      if (price !== null && value !== '') {
+        const sellValue = parseFloat(value);
+        const buyValue =
+          sellAsset === 'USDT' && buyAsset === 'ETH'
+            ? sellValue / price
+            : sellAsset === 'ETH' && buyAsset === 'USDT'
+              ? sellValue * price
+              : 0;
+
+        setBuyAmount(buyValue.toFixed(6));
+        console.log(`hi at buyamount ${buyAmount}`);
+      } else {
+        setBuyAmount('');
+      }
     }
   };
 
-  const handleAssetChange = (newAsset: 'ETH' | 'USDT') => {
-    setAsset(newAsset);
+  const handleSellAssetChange = (newSellAsset: 'ETH' | 'USDT') => {
+    console.log(`hi at handleseell ${newSellAsset}`);
+    console.log(`hi at handleseell2 ${buyAsset}`);
+    if (newSellAsset === buyAsset) {
+      setBuyAsset(sellAsset);
+    }
+    setSellAsset(newSellAsset);
+    console.log(`hi at handleseell ${newSellAsset}`);
+    console.log(`hi at handleseell2 ${buyAsset}`);
+  };
+
+  const handleBuyAssetChange = (newBuyAsset: 'ETH' | 'USDT') => {
+    console.log(`hi at handlenewbuy ${newBuyAsset}`);
+
+    if (newBuyAsset === sellAsset) {
+      setSellAsset(buyAsset);
+    }
+    setBuyAsset(newBuyAsset);
+    console.log(`hi at handlenewbuyasset ${newBuyAsset}`);
   };
 
   return (
@@ -59,20 +109,23 @@ const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
               type="number"
               className="w-full text-lg font-bold text-black bg-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-0"
               placeholder="0"
-              value={amount}
-              onChange={handleInputChange}
+              value={sellAmount}
+              onChange={handleSellInputChange}
             />
             <span className="ml-3 text-sm text-gray-500">
-              {price !== null && amount
-                ? `$${(price * parseFloat(amount || '0')).toFixed(2)}`
+              {price !== null && sellAmount
+                ? `$${(sellAsset === 'USDT'
+                    ? parseFloat(sellAmount) * price
+                    : parseFloat(sellAmount) * (1 / price)
+                  ).toFixed(2)}`
                 : price !== null
                   ? '$0.00'
                   : 'Fetching price...'}
             </span>
           </div>
           <DropdownWithImages
-            selectedAsset={asset}
-            onAssetChange={handleAssetChange}
+            selectedAsset={sellAsset}
+            onAssetChange={handleSellAssetChange}
           />
         </div>
       </div>
@@ -83,17 +136,13 @@ const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
         </div>
         <div className="flex items-center space-x-4 bg-gray-100 rounded-lg h-20">
           <div className="flex-1 ">
-            <input
-              type="number"
-              className="w-full text-lg font-bold text-black bg-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-0"
-              placeholder="0"
-              disabled
-            />
-            <span className="ml-3 text-sm text-gray-500">$24,481.80</span>
+            <div className="w-full text-lg font-bold text-black bg-gray-100 rounded-lg px-3 py-2 focus:outline-none focus:ring-0">
+              {sellAmount === '0' ? 0 : buyAmount}
+            </div>
           </div>
           <DropdownWithImages
-            selectedAsset={asset}
-            onAssetChange={handleAssetChange}
+            selectedAsset={buyAsset}
+            onAssetChange={handleBuyAssetChange}
           />
         </div>
       </div>
@@ -108,8 +157,13 @@ const SwapCard: React.FC<SwapCardProps> = ({ onSwapClick }) => {
       </div>
 
       <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-        <span className="text-left">1 USDT = 0.00044 ETH ($1.00)</span>
-        <span className="text-right">$44.48</span>
+        <span className="text-left">
+          {price !== null
+            ? `1 ${sellAsset} = ${
+                sellAsset === 'USDT' ? (1 / price).toFixed(6) : price.toFixed(2)
+              } ${buyAsset}`
+            : 'Fetching price...'}
+        </span>
       </div>
     </div>
   );

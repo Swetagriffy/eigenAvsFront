@@ -100,8 +100,9 @@ const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
         options={currencyOptions}
         defaultValue={currencyOptions[0]}
         styles={customStyles}
-        components={{ IndicatorSeparator: () => null }} // Removes separator
+        components={{ IndicatorSeparator: () => null }}
       />
+
       <style>
         {`
           @keyframes fadeIn {
