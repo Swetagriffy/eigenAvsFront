@@ -42,19 +42,35 @@ const Navbar: React.FC = () => {
       </div>
 
       <div className="flex items-center">
-        <motion.button
-          className="relative px-6 py-2 text-white font-semibold rounded-lg overflow-hidden group bg-blue-500 shadow-md hover:shadow-lg border-2 border-transparent hover:border-blue-600 transition-all duration-200"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <motion.div
+          initial={{
+            backgroundImage:
+              'linear-gradient(to right, white, white), linear-gradient(0deg, #2463EB, white 40%)',
+          }}
+          animate={{
+            backgroundImage:
+              'linear-gradient(to right, white, white), linear-gradient(360deg, #2463EB, white 40%)',
+          }}
+          transition={{
+            type: 'tween',
+            ease: 'linear',
+            duration: 2,
+            repeat: Infinity,
+          }}
+          style={{
+            border: '2px solid transparent',
+            borderRadius: '20px',
+            backgroundClip: 'padding-box, border-box',
+            backgroundOrigin: 'padding-box, border-box',
+            width: 160,
+            height: 40,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
-          <span className="relative z-10">Connect</span>
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 opacity-30 group-hover:opacity-50"
-            initial={{ x: '-100%' }}
-            animate={{ x: '0%' }}
-            transition={{ type: 'spring', stiffness: 100, damping: 25 }}
-          />
-        </motion.button>
+          Connect Wallet
+        </motion.div>
       </div>
     </nav>
   );
