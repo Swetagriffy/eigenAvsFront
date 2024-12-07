@@ -105,7 +105,7 @@ const Background = () => {
             circle.isSpecial
               ? ""
               : circle.isYellow
-              ? "bg-yellow-200"
+              ? "bg-blue-200"
               : "bg-gradient-to-r from-[#6896F9] to-[#2463EB]"
           }`}
           style={{
