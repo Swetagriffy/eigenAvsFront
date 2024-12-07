@@ -20,7 +20,7 @@ const Background = () => {
     const generateCircles = () => {
       const numCircles = 50;
       const specialCount = 10;
-      const yellowCount = 5; // Number of yellow circles
+      const yellowCount = 5; 
       const images = [
         "https://cryptologos.cc/logos/tether-usdt-logo.png",
         "https://cryptologos.cc/logos/tether-usdt-logo.png",
@@ -33,17 +33,17 @@ const Background = () => {
 
       const generatedCircles: Circle[] = Array.from({ length: numCircles }, (_, index) => ({
         id: index,
-        size: Math.random() * 40 + 20, // Size between 20px to 60px
-        x: Math.random() * window.innerWidth, // Random X position
-        y: Math.random() * window.innerHeight, // Random Y position
-        dx: Math.random() * 0.5 - 0.25, // Slower random X velocity (-0.25 to 0.25)
-        dy: Math.random() * 0.5 - 0.25, // Slower random Y velocity (-0.25 to 0.25)
+        size: Math.random() * 40 + 20, 
+        x: Math.random() * window.innerWidth, 
+        y: Math.random() * window.innerHeight, 
+        dx: Math.random() * 0.5 - 0.25, 
+        dy: Math.random() * 0.5 - 0.25, 
         isSpecial: index < specialCount,
         isYellow: index >= specialCount && index < specialCount + yellowCount,
         image: index < specialCount ? images[index % images.length] : undefined,
       }));
 
-      // Shuffle to randomize the placement of special and yellow circles
+     
       setCircles(generatedCircles.sort(() => Math.random() - 0.5));
     };
 
@@ -60,19 +60,17 @@ const Background = () => {
         for (let i = 0; i < updatedCircles.length; i++) {
           const circle = updatedCircles[i];
 
-          // Update position
+        
           circle.x += circle.dx;
           circle.y += circle.dy;
 
-          // Check for collisions with container boundaries
           if (circle.x <= 0 || circle.x + circle.size >= window.innerWidth) {
-            circle.dx *= -1; // Reverse X direction
+            circle.dx *= -1; 
           }
           if (circle.y <= 0 || circle.y + circle.size >= window.innerHeight) {
-            circle.dy *= -1; // Reverse Y direction
+            circle.dy *= -1; 
           }
 
-          // Check for collisions with other circles
           for (let j = i + 1; j < updatedCircles.length; j++) {
             const otherCircle = updatedCircles[j];
             const dist = Math.hypot(
@@ -113,7 +111,7 @@ const Background = () => {
             height: `${circle.size}px`,
             left: `${circle.x}px`,
             top: `${circle.y}px`,
-            filter: circle.isSpecial || circle.isYellow ? "blur(4px)" : "blur(4px)", // Blur effect
+            filter: circle.isSpecial || circle.isYellow ? "blur(4px)" : "blur(4px)", 
             backgroundImage: circle.isSpecial && circle.image ? `url(${circle.image})` : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",

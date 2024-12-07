@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '../../components/Navbar';
 import SwapCard from '../../components/SwapCard';
 
 const Swap: React.FC = () => {
@@ -9,7 +8,6 @@ const Swap: React.FC = () => {
 
   return (
     <div className=" min-h-screen w-full ">
-      <Navbar />
 
       <div className="flex justify-center items-center pt-8 mt-8">
         <SwapCard onSwapClick={handleSwapClick} />
