@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -11,9 +12,15 @@ const Navbar: React.FC = () => {
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 bg-blue-900 rounded-full animate-pulse"></div>
-          <span className="font-semibold text-blue-500 text-lg">
+          <Link to="/" className="font-semibold text-blue-500 text-lg">
             Swap-Trade
-          </span>
+          </Link>
+          <Link
+            to="/faucet"
+            className="bg-blue-200 py-2 px-4 text-white rounded hover:bg-blue-400 transition duration-300"
+          >
+            Open Faucet
+          </Link>
         </div>
 
         <div className="hidden md:flex space-x-6 relative">
