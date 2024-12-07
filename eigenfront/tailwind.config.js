@@ -6,7 +6,13 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      blur: {
+        sm: '4px',
+        DEFAULT: '8px',
+        lg: '12px',
+      },
+    },
   },
   plugins: [],
 };
