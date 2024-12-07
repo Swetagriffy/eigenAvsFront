@@ -1,22 +1,29 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar"; 
 import Swap from "./pages/SwapPage/Swap";
-import Background from "./components/Background"; // Import Background
+import Background from "./components/Background";
+import Orderbook from "../src/pages/OrderbookPage/Orderbook";
 
 const App: React.FC = () => {
   return (
     <div className="relative h-screen w-screen overflow-hidden">
-      {/* Animated Background */}
+    
       <div className="fixed inset-0 z-0 pointer-events-none">
         <Background />
       </div>
 
-      {/* Routing */}
+   
       <div className="relative z-10">
         <Router>
-          <Routes>
-            <Route path="/" element={<Swap />} />
-          </Routes>
+       
+          <Navbar />
+          <div className="pt-16"> 
+            <Routes>
+              <Route path="/" element={<Swap />} />
+              <Route path="/orderbook" element={<Orderbook />} />
+            </Routes>
+          </div>
         </Router>
       </div>
     </div>
