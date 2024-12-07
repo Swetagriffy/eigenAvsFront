@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
               className="relative text-gray-700 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
-              whileHover={{ x: 5 }} 
+              whileHover={{ x: 5 }}
             >
               {item}
               {hoveredIndex === index && (
@@ -67,6 +67,7 @@ const Navbar: React.FC = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
+            color: 'black',
           }}
         >
           Connect Wallet
