@@ -1,14 +1,14 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Swap from "./pages/SwapPage/Swap";
-import Background from "./components/Background"; // Import Background
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Swap from './pages/SwapPage/Swap';
+import ParticleRing from './components/ParticleRing';
 
 const App: React.FC = () => {
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <Background />
+        <ParticleRing />
       </div>
 
       {/* Routing */}

@@ -8,7 +8,7 @@ const Swap: React.FC = () => {
   };
 
   return (
-    <div className=" min-h-screen w-full ">
+    <div className=" min-h-screen ">
       <Navbar />
 
       <div className="flex justify-center items-center pt-8 mt-8">
