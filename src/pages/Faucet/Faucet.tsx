@@ -3,15 +3,23 @@ import animationData from '../../assets/lottie/nofunds-lottie.json';
 import Lottie from 'react-lottie';
 import DropdownMint from '../../components/DropdownMint';
 const FaucetForm = () => {
-  const [sellAsset, setSellAsset] = useState<'ETH' | 'USDT'>('USDT');
-  const [buyAsset, setBuyAsset] = useState<'ETH' | 'USDT'>('ETH');
+  const [selectedAsset, setSelectedAsset] = useState<'ETH' | 'USDT'>('USDT');
+  const [transactionStatus, setTransactionStatus] = useState<string>('');
 
-  const handleSellAssetChange = (newSellAsset: 'ETH' | 'USDT') => {
-    if (newSellAsset === buyAsset) {
-      setBuyAsset(sellAsset);
-    }
-    setSellAsset(newSellAsset);
+  const handleAssetChange = (newAsset: 'ETH' | 'USDT') => {
+    setSelectedAsset(newAsset);
   };
+
+  const handleMintClick = () => {
+    if (selectedAsset === 'USDT') {
+      const receiver = '0xReceiverAddress';
+      const amount = '10000';
+      // mintUSDT(receiver, amount);
+    } else {
+      setTransactionStatus('Please select USDT to mint.');
+    }
+  };
+
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -42,8 +50,8 @@ const FaucetForm = () => {
           Token
         </label>
         <DropdownMint
-          selectedAsset={sellAsset}
-          onAssetChange={handleSellAssetChange}
+          selectedAsset={selectedAsset}
+          onAssetChange={handleAssetChange}
         />
       </div>
       <div className="w-full mb-4 mt-8">
@@ -57,12 +65,16 @@ const FaucetForm = () => {
         />
       </div>
       <div className="mt-6">
-        <button className="w-full bg-gradient-to-r from-[#6896F9] to-[#2463EB] text-white text-lg py-3 rounded-3xl font-semibold hover:from-blue-600 hover:to-blue-800">
+        <button
+          onClick={handleMintClick}
+          className="w-full bg-gradient-to-r from-[#6896F9] to-[#2463EB] text-white text-lg py-3 rounded-3xl font-semibold hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-0"
+        >
           Mint
         </button>
       </div>
-
-      <div className="flex justify-between items-center mt-4 text-sm text-gray-500"></div>
+      {transactionStatus && (
+        <div className="mt-4 text-sm text-gray-500">{transactionStatus}</div>
+      )}
     </div>
   );
 };

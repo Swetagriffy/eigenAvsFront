@@ -49,7 +49,7 @@ const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
       boxShadow: 'none',
       display: 'flex',
       width: '100%',
-      backgroundColor: '#f0f0f0', // Change the background color
+      backgroundColor: '#f0f0f0',
     }),
     option: (provided: any, state: any) => ({
       ...provided,
@@ -92,7 +92,7 @@ const DropdownWithImages: React.FC<DropdownWithImagesProps> = ({
     <div className="w-full">
       <Select
         options={currencyOptions}
-        value={currencyOptions.find((option) => option.value === selectedAsset)} // Bind to selectedAsset
+        value={currencyOptions.find((option) => option.value === selectedAsset)}
         onChange={handleChange}
         styles={customStyles}
         components={{ IndicatorSeparator: () => null }}
