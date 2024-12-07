@@ -1,61 +1,37 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useSyncProviders } from '../hooks/useSyncProviders';
-import { formatAddress } from '../utils';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const providers = useSyncProviders();
-  
-  const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>();
-  const [userAccount, setUserAccount] = useState<string>("");
+  const navigate = useNavigate();
+  const location = useLocation(); // To get the current path
 
-  const menuItems = ['Explore', 'NFTs', 'Pools', 'More'];
-
-  const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
-    try {
-      const accounts = await providerWithInfo.provider.request({
-        method: "eth_requestAccounts",
-      });
-
-      setSelectedWallet(providerWithInfo);
-      setUserAccount(accounts?.[0]);
-
-      // Check and set the provider network to Sepolia
-      const network = await providerWithInfo.provider.request({
-        method: "eth_chainId",
-      });
-
-      if (network !== "0xaa36a7") {
-        // Sepolia network ID
-        return;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const menuItems = [
+    { label: 'Swap', path: '/' },
+    { label: 'Orderbook', path: '/orderbook' },
+    { label: 'Pools', path: '/pools' },
+    { label: 'More', path: '/more' },
+  ];
 
   return (
     <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center transition-all duration-300">
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 bg-blue-900 rounded-full animate-pulse"></div>
-          <span className="font-semibold text-blue-500 text-lg">
-            Swap-Trade
-          </span>
+          <span className="font-semibold text-blue-500 text-lg">Swap-Trade</span>
         </div>
 
         <div className="hidden md:flex space-x-6 relative">
           {menuItems.map((item, index) => (
             <motion.div
               key={index}
-              className="relative text-gray-700 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              whileHover={{ x: 5 }}
+              className={`relative text-gray-700 hover:text-blue-600 transition-colors duration-200 cursor-pointer ${
+                location.pathname === item.path ? 'text-blue-600' : ''
+              }`}
+              onClick={() => navigate(item.path)}
             >
-              {item}
-              {hoveredIndex === index && (
+              {item.label}
+              {(location.pathname === item.path) && (
                 <motion.div
                   layoutId="hover-underline"
                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-600"
@@ -70,7 +46,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center cursor-pointer" onClick={() => handleConnect(providers[3])}>
+      <div className="flex items-center">
         <motion.div
           initial={{
             backgroundImage:
@@ -99,7 +75,7 @@ const Navbar: React.FC = () => {
             color: 'black',
           }}
         >
-          {userAccount?formatAddress(userAccount):"Connect Wallet"}
+          Connect Wallet
         </motion.div>
       </div>
     </nav>
