@@ -1,10 +1,39 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSyncProviders } from '../hooks/useSyncProviders';
+import { formatAddress } from '../utils';
 
 const Navbar: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const providers = useSyncProviders();
+  
+  const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>();
+  const [userAccount, setUserAccount] = useState<string>("");
 
   const menuItems = ['Explore', 'NFTs', 'Pools', 'More'];
+
+  const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
+    try {
+      const accounts = await providerWithInfo.provider.request({
+        method: "eth_requestAccounts",
+      });
+
+      setSelectedWallet(providerWithInfo);
+      setUserAccount(accounts?.[0]);
+
+      // Check and set the provider network to Sepolia
+      const network = await providerWithInfo.provider.request({
+        method: "eth_chainId",
+      });
+
+      if (network !== "0xaa36a7") {
+        // Sepolia network ID
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center transition-all duration-300">
@@ -41,7 +70,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center cursor-pointer" onClick={() => handleConnect(providers[3])}>
         <motion.div
           initial={{
             backgroundImage:
@@ -70,7 +99,7 @@ const Navbar: React.FC = () => {
             color: 'black',
           }}
         >
-          Connect Wallet
+          {userAccount?formatAddress(userAccount):"Connect Wallet"}
         </motion.div>
       </div>
     </nav>
