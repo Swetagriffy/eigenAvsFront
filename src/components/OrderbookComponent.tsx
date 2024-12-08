@@ -29,7 +29,7 @@ const OrderbookComponent: React.FC = () => {
   }, []);
 
   const renderRows = () => {
-    return orders.map((order) => (
+    return orders.slice(4).map((order) => (
       <tr key={order.orderid} className="hover:bg-gray-50">
         <td className="ps-4 py-4 text-green-700 font-semibold">
           {order.orderid}
@@ -39,7 +39,7 @@ const OrderbookComponent: React.FC = () => {
         </td>
 
         <td className="py-4 text-red-700 text-center font-medium">
-          {order.amount}
+          {parseFloat(order.amount)}
         </td>
         <td className="pe-4 py-4 text-red-700 font-semibold text-right">
           ${order.price}
