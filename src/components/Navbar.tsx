@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
   const menuItems = [
     { label: 'Swap', path: '/' },
     { label: 'Orderbook', path: '/orderbook' },
-    { label: 'Pools', path: '/pools' },
+    { label: 'Mint', path: '/faucet' },
     { label: 'More', path: '/more' },
   ];
 
