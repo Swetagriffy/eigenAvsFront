@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
   const menuItems = [
     { label: 'Swap', path: '/' },
     { label: 'Orderbook', path: '/orderbook' },
-    { label: 'Pools', path: '/pools' },
+    { label: 'Mint', path: '/faucet' },
     { label: 'More', path: '/more' },
   ];
 
@@ -52,7 +52,9 @@ const Navbar: React.FC = () => {
       <div className="flex items-center space-x-6">
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 bg-blue-900 rounded-full animate-pulse"></div>
-          <span className="font-semibold text-blue-500 text-lg">Swap-Trade</span>
+          <span className="font-semibold text-blue-500 text-lg">
+            Swap-Trade
+          </span>
         </div>
 
         <div className="hidden md:flex space-x-6 relative">
@@ -65,7 +67,7 @@ const Navbar: React.FC = () => {
               onClick={() => navigate(item.path)}
             >
               {item.label}
-              {(location.pathname === item.path) && (
+              {location.pathname === item.path && (
                 <motion.div
                   layoutId="hover-underline"
                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-blue-600"

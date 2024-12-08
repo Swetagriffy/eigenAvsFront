@@ -9,8 +9,6 @@ const Swap: React.FC = () => {
 
   return (
     <div className=" min-h-screen w-full ">
-   
-
       <div className="flex justify-center items-center pt-8 mt-8">
         <SwapCard onSwapClick={handleSwapClick} />
       </div>
