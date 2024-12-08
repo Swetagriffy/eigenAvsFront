@@ -151,13 +151,6 @@ const Navbar: React.FC = () => {
           </motion.div>
         </div>
       </div>
-
-      {apiSuccess && (
-        <p style={{ color: 'green', marginTop: '20px' }}>{apiSuccess}</p>
-      )}
-      {apiError && (
-        <p style={{ color: 'red', marginTop: '20px' }}>{apiError}</p>
-      )}
     </nav>
   );
 };
