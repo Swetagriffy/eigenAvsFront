@@ -1,18 +1,22 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ethers } from 'ethers';
 import { useSyncProviders } from '../hooks/useSyncProviders';
 import { formatAddress } from '../utils';
+import { createUser, User } from '../utils/user';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // To get the current path
-  
-  const [userAccount, setUserAccount] = useState<string>("");
-  const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>();
+  const location = useLocation();
+  const [userAccount, setUserAccount] = useState<string>('');
+  const [, setSelectedWallet] = useState<EIP6963ProviderDetail>();
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [apiSuccess, setApiSuccess] = useState<string | null>(null);
+
   const providers = useSyncProviders();
   const metaMask = providers.find((item) => item.info.name === 'MetaMask');
-
 
   const menuItems = [
     { label: 'Swap', path: '/' },
@@ -21,29 +25,57 @@ const Navbar: React.FC = () => {
     { label: 'More', path: '/more' },
   ];
 
-
-  const handleConnect = async (providerWithInfo: EIP6963ProviderDetail | undefined) => {
+  const handleConnect = async (
+    providerWithInfo: EIP6963ProviderDetail | undefined
+  ) => {
     try {
-      if(!providerWithInfo)return
-      console.log('fuck')
+      if (!providerWithInfo) {
+        console.log('No provider found.');
+        return;
+      }
+
+      // Request account connection
       const accounts = await providerWithInfo.provider.request({
-        method: "eth_requestAccounts",
+        method: 'eth_requestAccounts',
       });
 
+      // Set wallet and user account
       setSelectedWallet(providerWithInfo);
-      setUserAccount(accounts?.[0]);
+      const connectedAccount = accounts?.[0];
+      setUserAccount(connectedAccount);
+      console.log('User account: ' + connectedAccount);
 
-      // Check and set the provider network to Sepolia
+      if (!connectedAccount) {
+        console.log('No account found.');
+        return;
+      }
+
+      const wallet = ethers.Wallet.createRandom();
+
+      const user: User = {
+        public_address: wallet.address,
+        private_address: wallet.privateKey,
+        ethereum_address: connectedAccount,
+      };
+      console.log('Generated Wallet:', user);
+
+      const response = await createUser(user);
+      setApiSuccess(`User created successfully: ${response.message}`);
+      setApiError(null);
+
+      setUserAccount(wallet.address);
+
       const network = await providerWithInfo.provider.request({
-        method: "eth_chainId",
+        method: 'eth_chainId',
       });
 
-      if (network !== "0xaa36a7") {
-        // Sepolia network ID
+      if (network !== '0xaa36a7') {
+        console.log('Incorrect network. Please switch to Sepolia.');
         return;
       }
     } catch (error) {
-      console.error(error);
+      setApiError('Failed to connect and create user. Please try again.');
+      console.error('Error:', error);
     }
   };
 
@@ -82,38 +114,50 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex items-center cursor-pointer" onClick={()=>handleConnect(metaMask)}>
-        <motion.div
-          initial={{
-            backgroundImage:
-              'linear-gradient(to right, white, white), linear-gradient(0deg, #2463EB, white 40%)',
-          }}
-          animate={{
-            backgroundImage:
-              'linear-gradient(to right, white, white), linear-gradient(360deg, #2463EB, white 40%)',
-          }}
-          transition={{
-            type: 'tween',
-            ease: 'linear',
-            duration: 2,
-            repeat: Infinity,
-          }}
-          style={{
-            border: '2px solid transparent',
-            borderRadius: '20px',
-            backgroundClip: 'padding-box, border-box',
-            backgroundOrigin: 'padding-box, border-box',
-            width: 160,
-            height: 40,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            color: 'black',
-          }}
+      <div className="flex items-center space-x-4">
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={() => handleConnect(metaMask)}
         >
-         {userAccount?formatAddress(userAccount):"Connect Wallet"}
-        </motion.div>
+          <motion.div
+            initial={{
+              backgroundImage:
+                'linear-gradient(to right, white, white), linear-gradient(0deg, #2463EB, white 40%)',
+            }}
+            animate={{
+              backgroundImage:
+                'linear-gradient(to right, white, white), linear-gradient(360deg, #2463EB, white 40%)',
+            }}
+            transition={{
+              type: 'tween',
+              ease: 'linear',
+              duration: 2,
+              repeat: Infinity,
+            }}
+            style={{
+              border: '2px solid transparent',
+              borderRadius: '20px',
+              backgroundClip: 'padding-box, border-box',
+              backgroundOrigin: 'padding-box, border-box',
+              width: 160,
+              height: 40,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: 'black',
+            }}
+          >
+            {userAccount ? formatAddress(userAccount) : 'Connect Wallet'}
+          </motion.div>
+        </div>
       </div>
+
+      {apiSuccess && (
+        <p style={{ color: 'green', marginTop: '20px' }}>{apiSuccess}</p>
+      )}
+      {apiError && (
+        <p style={{ color: 'red', marginTop: '20px' }}>{apiError}</p>
+      )}
     </nav>
   );
 };
