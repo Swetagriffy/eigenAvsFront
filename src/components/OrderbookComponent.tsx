@@ -1,42 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 type Order = {
+  orderid: number;
+  amount: string;
   price: string;
+  token: string;
   quantity: string;
-  type: 'buy' | 'sell'; 
+  type: 'buy' | 'sell';
 };
 
-const orders: Order[] = [
-  { price: '1800.00', quantity: '2.5', type: 'buy' },
-  { price: '1795.00', quantity: '1.8', type: 'buy' },
-  { price: '1810.00', quantity: '1.2', type: 'sell' },
-  { price: '1820.00', quantity: '3.0', type: 'sell' },
-];
-
 const OrderbookComponent: React.FC = () => {
-  const buyEthOrders = orders.filter(order => order.type === 'buy').sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-  const sellEthOrders = orders.filter(order => order.type === 'sell').sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  // Fetch orders from the backend
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/orderbook'); // Adjust the URL if necessary
+        console.log('Fetched orders:', response.data); // Log the response data
+        setOrders(response.data); // Assuming the response is an array of orders
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const renderRows = () => {
-    const maxRows = Math.max(buyEthOrders.length, sellEthOrders.length);
-
-    return Array.from({ length: maxRows }).map((_, index) => (
-      <tr key={index} className="hover:bg-gray-50">
-       
+    return orders.map((order) => (
+      <tr key={order.orderid} className="hover:bg-gray-50">
         <td className="ps-4 py-4 text-green-700 font-semibold">
-          {buyEthOrders[index] ? `${buyEthOrders[index].quantity} ETH` : '-'}
+          {order.orderid}
         </td>
         <td className="py-4 text-green-700 text-center font-medium">
-          {buyEthOrders[index] ? `$${buyEthOrders[index].price}` : '-'}
+          {order.token}
         </td>
-   
-        <td className="py-4 text-center text-black font-semibold">-</td>
 
         <td className="py-4 text-red-700 text-center font-medium">
-          {sellEthOrders[index] ? `$${sellEthOrders[index].price}` : '-'}
+          {order.amount}
         </td>
         <td className="pe-4 py-4 text-red-700 font-semibold text-right">
-          {sellEthOrders[index] ? `${sellEthOrders[index].quantity} ETH` : '-'}
+          ${order.price}
         </td>
       </tr>
     ));
@@ -50,19 +56,17 @@ const OrderbookComponent: React.FC = () => {
             <thead className="text-base uppercase text-gray-600 bg-blue-100 rounded-t-lg">
               <tr>
                 <th className="ps-4 py-3" style={{ width: '25%' }}>
-                  Buy ETH (Sell USDT)
+                  OrderId
+                  {/* Show token dynamically */}
                 </th>
                 <th className="py-3 text-center" style={{ width: '15%' }}>
-                  Price
-                </th>
-                <th className="py-3 text-center" style={{ width: '10%' }}>
-                  -
+                  Token
                 </th>
                 <th className="py-3 text-center" style={{ width: '15%' }}>
-                  Price
+                  Amount
                 </th>
                 <th className="pe-4 py-3 text-right" style={{ width: '25%' }}>
-                  Sell ETH (Buy USDT)
+                  Price
                 </th>
               </tr>
             </thead>
