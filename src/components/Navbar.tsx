@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import WalletGenerator from './WalletGenerator';
 
 const Navbar: React.FC = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -40,7 +41,7 @@ const Navbar: React.FC = () => {
           ))}
         </div>
       </div>
-
+      <WalletGenerator />
       <div className="flex items-center">
         <motion.div
           initial={{
